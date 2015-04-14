@@ -4,10 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Estate {
 	//Estate Variables
-	private int ID;
+	private int ID == -1;
 	private String City;
 	private int PostalCode;
 	private String Street;
@@ -106,6 +107,55 @@ public class Estate {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void save() {
+		// Hole Verbindung
+		Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+		try {
+			// FC<ge neues Element hinzu, wenn das Objekt noch keine ID hat.
+			if (getID() == -1) {
+				// Achtung, hier wird noch ein Parameter mitgegeben,
+				// damit spC$ter generierte IDs zurC<ckgeliefert werden!
+				String insertSQL = "INSERT INTO makler(name, address, login, password) VALUES (?, ?, ?, ?)";
+
+				PreparedStatement pstmt = con.prepareStatement(insertSQL,
+						Statement.RETURN_GENERATED_KEYS);
+
+				// Setze Anfrageparameter und fC<hre Anfrage aus
+				pstmt.setString(1, getName());
+				pstmt.setString(2, getAddress());
+				pstmt.setString(3, getLogin());
+				pstmt.setString(4, getPassword());
+				pstmt.executeUpdate();
+
+				// Hole die Id des engefC<gten Datensatzes
+				ResultSet rs = pstmt.getGeneratedKeys();
+				if (rs.next()) {
+					setId(rs.getInt(1));
+				}
+
+				rs.close();
+				pstmt.close();
+			} else {
+				// Falls schon eine ID vorhanden ist, mache ein Update...
+				String updateSQL = "UPDATE makler SET name = ?, address = ?, login = ?, password = ? WHERE id = ?";
+				PreparedStatement pstmt = con.prepareStatement(updateSQL);
+
+				// Setze Anfrage Parameter
+				pstmt.setString(1, getName());
+				pstmt.setString(2, getAddress());
+				pstmt.setString(3, getLogin());
+				pstmt.setString(4, getPassword());
+				pstmt.setInt(5, getId());
+				pstmt.executeUpdate();
+
+				pstmt.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -1,0 +1,63 @@
+CREATE TABLE Estate(
+	ID int 			PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+	City varchar(255) 	NOT NULL,
+	PostalCode int 	NOT NULL,
+	Street varchar(255) NOT NULL,
+	StreetNumber int 	NOT NULL,
+	SquareArea int		NOT NULL,
+	CONSTRAINT AgentID FOREIGN KEY REFERENCES EstateAgent(AID),	
+);
+
+CREATE TABLE Apartment(
+	Floor int			,
+	Rent int 			,
+	Rooms int 		,
+	Balcony byte		,
+	Built-in Kitchen byte	,
+	CONSTRAINT EstateID FOREIGN KEY REFERENCES Estate(ID)
+);
+
+CREATE TABLE HOUSE(
+	Floors int 		,
+	Price int 		,
+	Garden byte		,
+	CONSTRAINT EstateID FOREIGN KEY REFERENCES Estate(ID)
+)
+
+CREATE TABLE EstateAgent(
+	AID int			PRIMARY KEY
+	Name varchar(255) 	,
+	Adress varchar(255) 	,
+	Login varchar(255) 	,
+	Password varchar(255)	
+);
+
+CREATE TABLE Person(
+	PID int				PRIMARY KEY,
+	FirstName varchar(255)	,
+	Name varchar(255)		,
+	Adress varchar(255)	
+);
+
+CREATE TABLE Contract(
+	ContractNo int 	PRIMARY KEY,
+	Date int 			NOT NULL,
+	Constraint Place(ID) FOREIGN KEY REFERENCES Estate(ID),
+);
+
+CREATE TABLE TenancyContract(
+	STARTDATE int 		,
+	Duration int 		,
+	AddCosts int 		,
+	CONSTRAINT ContractNo FOREIGN KEY REFERENCES Contract(ContractNo),
+	CONSTRAINT EstateID FOREIGN KEY REFERENCES Apartment(EstateID),
+	CONSTRAINT Buyer FOREIGN KEY REFERENCES Person(PID)
+);
+
+CREATE TABLE PurchaseContract(
+	NoOInstallments int	,
+	InterestRate int 	,
+	CONSTRAINT ContractNo FOREIGN KEY REFERENCES Contract(ContractNo),
+	CONSTRAINT EstateID FOREIGN KEY REFERENCES Apartment(EstateID),
+	CONSTRAINT Buyer FOREIGN KEY REFERENCES Person(PID)
+)
