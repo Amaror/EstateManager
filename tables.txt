@@ -18,10 +18,10 @@ CREATE TABLE Apartment(
 );
 
 CREATE TABLE HOUSE(
-	Floors int 		,
-	Price int 		,
-	Garden byte		,
-	CONSTRAINT EstateID FOREIGN KEY REFERENCES Estate(ID)
+	floors int 		,
+	price int 		,
+	garden byte		,
+	CONSTRAINT estateid FOREIGN KEY REFERENCES Estate(ID)
 )
 
 CREATE TABLE EstateAgent(

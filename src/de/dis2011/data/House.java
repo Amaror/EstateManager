@@ -6,103 +6,83 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public abstract class Estate {
-	//Estate Variables
-	private int ID = -1;
-	private String City;
-	private int PostalCode;
-	private String Street;
-	private int StreetNumber;
-	private int SquareArea;
-	private int AgentID;
+public class House extends Estate{
 	
-	public Estate(){
-	}
-
-	//Getter Setter
-	public int getID(){
-		return ID;
+	private int Floor;
+	private int Price;
+	private boolean Garden;
+	private int EstateID;
+	
+	//Getter and Setter
+	public int getFloor() {
+		return Floor;
 	}
 	
-	public void setID(int id) {
-		ID = id;
+	public void setFloor(int floor) {
+		Floor = floor;
 	}
 	
-	public String getCity(){
-		return City;
+	public int getPrice() {
+		return Price;
 	}
 	
-	public void setCity(String city) {
-		City = city;
+	public void setPrice(int price) {
+		Price = price;
 	}
 	
-	public int getPCode(){
-		return PostalCode;
+	public boolean getGarden() {
+		return Garden;
 	}
 	
-	public void setPCode(int pcode) {
-		PostalCode = pcode;
+	public void setGarden(boolean garden) {
+		Garden = garden;
 	}
 	
-	public String getStreet(){
-		return Street;
+	public int getEstate() {
+		return EstateID;
 	}
 	
-	public void setStreet(String street) {
-		Street = street;
+	public void setEstate(int estate) {
+		EstateID = estate;
 	}
 	
-	public int getStreetNumber(){
-		return StreetNumber;
-	}
-	
-	public void setStreetNumber(int sn) {
-		StreetNumber = sn;
-	}
-	
-	public int getSquareArea(){
-		return SquareArea;
-	}
-	
-	public void setSquareArea(int sq) {
-		SquareArea = sq;
-	}
-	
-	public int getAgent(){
-		return AgentID;
-	}
-	
-	public void setAgent(int agent) {
-		AgentID = agent;
-	}
-	
-	//Ladet die Estate
-	public static Estate load(int id) {
+	public static House load(int id) {
 		try {
 			// Hole Verbindung
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Erzeuge Anfrage
-			String selectSQL = "SELECT * FROM estate WHERE id = ?";
+			String selectSQL = "SELECT * FROM house WHERE estateid = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
 
 			// Führe Anfrage aus
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				//Estate ts = new Estate();
-				//ts.setID(id);
-				//ts.setCity(rs.getString("city"));
-				//ts.setPCode(rs.getInt("postalcode"));
-				//ts.setStreet(rs.getString("street"));
-				//ts.setStreetNumber(rs.getInt("streetnumber"));
-				//ts.setSquareArea(rs.getInt("squarearea"));
-				//ts.setAgent(rs.getInt("agentid"));
+				House ts = new House();
+				ts.setFloor(rs.getInt("floor"));
+				ts.setPrice(rs.getInt("price"));
+				ts.setGarden(rs.getBoolean("garden"));
+				ts.setEstate(rs.getInt("estateid"));
 
 				rs.close();
 				pstmt.close();
-				//return ts;
-			}
+				
+				selectSQL = "SELECT * FROM estate WHERE id = ?";
+				pstmt = con.prepareStatement(selectSQL);
+				pstmt.setInt(1, id);
+
+				// Führe Anfrage aus
+				rs = pstmt.executeQuery();
+				
+				ts.setID(id);
+				ts.setCity(rs.getString("city"));
+				ts.setPCode(rs.getInt("postalcode"));
+				ts.setStreet(rs.getString("street"));
+				ts.setStreetNumber(rs.getInt("streetnumber"));
+				ts.setSquareArea(rs.getInt("squarearea"));
+				ts.setAgent(rs.getInt("agentid"));
+				}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -137,13 +117,27 @@ public abstract class Estate {
 				ResultSet rs = pstmt.getGeneratedKeys();
 				if (rs.next()) {
 					setID(rs.getInt(1));
+					setEstate(rs.getInt(1));
 				}
+				
+				insertSQL = "INSERT INTO house(floor, price, garden, estateid) VALUES (?, ?, ?, ?)";
+
+				pstmt = con.prepareStatement(insertSQL,
+						Statement.RETURN_GENERATED_KEYS);
+
+				// Setze Anfrageparameter und fC<hre Anfrage aus
+				pstmt.setInt(1, getFloor());
+				pstmt.setInt(2, getPrice());
+				pstmt.setBoolean(3, getGarden());
+				pstmt.setInt(4, getEstate());
+				
+				pstmt.executeUpdate();
 
 				rs.close();
 				pstmt.close();
 			} else {
 				// Falls schon eine ID vorhanden ist, mache ein Update...
-				String updateSQL = "UPDATE makler SET city = ?, postcode = ?, street = ?, streetnumber = ?, squarearea = ?, agentid = ? WHERE id = ?";
+				String updateSQL = "UPDATE estate SET city = ?, postcode = ?, street = ?, streetnumber = ?, squarearea = ?, agentid = ? WHERE id = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
@@ -153,6 +147,14 @@ public abstract class Estate {
 				pstmt.setInt(4, getStreetNumber());
 				pstmt.setInt(5, getSquareArea());
 				pstmt.setInt(6, getAgent());
+				
+				updateSQL = "UPDATE house SET floor = ?, price = ?, garden = ? WHERE estateid = ?";
+				pstmt = con.prepareStatement(updateSQL);
+				
+				// Setze Anfrage Parameter
+				pstmt.setInt(1, getFloor());
+				pstmt.setInt(2, getPrice());
+				pstmt.setBoolean(3, getGarden());
 
 				pstmt.close();
 			}
