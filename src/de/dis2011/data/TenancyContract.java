@@ -13,6 +13,10 @@ public class TenancyContract extends Contract{
 	private int AddCost;
 	private int Buyer;
 	
+	public TenancyContract(){
+		
+	}
+	
 	//Getter and Setter
 	public int getStartDate() {
 		return StartDate;

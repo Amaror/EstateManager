@@ -50,7 +50,6 @@ CREATE TABLE TenancyContract(
 	Duration int 		,
 	AddCosts int 		,
 	CONSTRAINT ContractNo FOREIGN KEY REFERENCES Contract(ContractNo),
-	CONSTRAINT EstateID FOREIGN KEY REFERENCES Apartment(EstateID),
 	CONSTRAINT Buyer FOREIGN KEY REFERENCES Person(PID)
 );
 
@@ -58,6 +57,5 @@ CREATE TABLE PurchaseContract(
 	NoOInstallments int	,
 	InterestRate int 	,
 	CONSTRAINT ContractNo FOREIGN KEY REFERENCES Contract(ContractNo),
-	CONSTRAINT EstateID FOREIGN KEY REFERENCES Apartment(EstateID),
 	CONSTRAINT Buyer FOREIGN KEY REFERENCES Person(PID)
 )

@@ -13,6 +13,9 @@ public class House extends Estate{
 	private boolean Garden;
 	private int EstateID;
 	
+	public House() {
+	}
+	
 	//Getter and Setter
 	public int getFloor() {
 		return Floor;
@@ -82,6 +85,8 @@ public class House extends Estate{
 				ts.setStreetNumber(rs.getInt("streetnumber"));
 				ts.setSquareArea(rs.getInt("squarearea"));
 				ts.setAgent(rs.getInt("agentid"));
+				
+				return ts;
 				}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -15,6 +15,10 @@ public class Apartment extends Estate{
 	private boolean BuiltInKitchen;
 	private int EstateID;
 	
+	public Apartment() {
+		
+	}
+	
 	//Getter and Setter
 	public int getFloor() {
 		return Floor;
@@ -102,6 +106,8 @@ public class Apartment extends Estate{
 				ts.setStreetNumber(rs.getInt("streetnumber"));
 				ts.setSquareArea(rs.getInt("squarearea"));
 				ts.setAgent(rs.getInt("agentid"));
+				
+				return ts;
 				}
 		} catch (SQLException e) {
 			e.printStackTrace();

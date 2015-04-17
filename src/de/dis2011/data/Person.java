@@ -13,6 +13,10 @@ public class Person {
 	private String Name;
 	private String Adress;
 	
+	public Person() {
+		
+	}
+	
 	//Getter/setter
 	
 	public int getPID(){

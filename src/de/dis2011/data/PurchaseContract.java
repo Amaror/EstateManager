@@ -12,6 +12,10 @@ public class PurchaseContract extends Contract{
 	private int InterestRate;
 	private int Buyer;
 	
+	public PurchaseContract(){
+		
+	}
+	
 	//Getter and Setter
 	public int getNoOInstallments() {
 		return NoOInstallments;
