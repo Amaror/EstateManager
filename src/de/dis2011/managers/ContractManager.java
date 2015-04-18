@@ -10,6 +10,7 @@ import de.dis2011.data.*;
 public class ContractManager {
 	
 private Contract[] ContractsArray;
+private int contractCount;
 	
 	public ContractManager() {
 		ContractsArray = new Contract[50];
@@ -19,7 +20,11 @@ private Contract[] ContractsArray;
 		return ContractsArray[id];
 	}
 	
-	public void addPurchaseContract(int nooinstallments, int interestrate, int buyer, int date, int placeid) {
+	public int getContractCount(){
+		return contractCount;
+	}
+	
+	public int addPurchaseContract(int nooinstallments, int interestrate, int buyer, int date, int placeid) {
 		PurchaseContract purchase = new PurchaseContract();
 		purchase.setNoOInstallments(nooinstallments);
 		purchase.setInterestRate(interestrate);
@@ -28,9 +33,11 @@ private Contract[] ContractsArray;
 		purchase.setPlaceID(placeid);
 		purchase.save();
 		ContractsArray[purchase.getContractNo()] = purchase;
+		contractCount++;
+		return purchase.getContractNo();
 	}
 	
-	public void addTenancyContract(int startdate, int duration, int addcost, int buyer, int date, int placeid) {
+	public int addTenancyContract(int startdate, int duration, int addcost, int buyer, int date, int placeid) {
 		TenancyContract tenancy = new TenancyContract();
 		tenancy.setStartDate(startdate);
 		tenancy.setDuration(duration);
@@ -40,6 +47,8 @@ private Contract[] ContractsArray;
 		tenancy.setPlaceID(placeid);
 		tenancy.save();
 		ContractsArray[tenancy.getContractNo()] = tenancy;
+		contractCount++;
+		return tenancy.getContractNo();
 	}
 	
 	public void loadContracts() {
@@ -57,6 +66,7 @@ private Contract[] ContractsArray;
 			
 			rs.next();
 			count = rs.getInt(1);
+			contractCount = count;
 			
 			for(int x = 1; x < count + 1; x++) {
 				TenancyContract tenancy = TenancyContract.load(x);

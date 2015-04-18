@@ -10,6 +10,7 @@ public class EstateManager {
 	
 	private Estate[] EstatesArray;
 	private int estateCount;
+	private int deletedEstates;
 	
 	public EstateManager() {
 		EstatesArray = new Estate[50];
@@ -60,7 +61,7 @@ public class EstateManager {
 		return newapartment.getID();
 	}
 	
-	public void changeHouse(int floor, int price, boolean garden, String city, int postalcode, String street, int streetnumber, int squarearea, int agent, int id) {
+	public void changeHouse(int floor, int price, boolean garden, String city, int postalcode, String street, int streetnumber, int squarearea, int id) {
 		House house = (House)EstatesArray[id];
 		house.setFloor(floor);
 		house.setPrice(price);
@@ -70,11 +71,10 @@ public class EstateManager {
 		house.setStreet(street);
 		house.setStreetNumber(streetnumber);
 		house.setSquareArea(squarearea);
-		house.setAgent(agent);
 		house.save();
 	}
 	
-	public void changeApartment(int floor, int rent, int rooms, boolean balcony, boolean builtinkitchen, String city, int postalcode, String street, int streetnumber, int squarearea, int agent, int id) {
+	public void changeApartment(int floor, int rent, int rooms, boolean balcony, boolean builtinkitchen, String city, int postalcode, String street, int streetnumber, int squarearea, int id) {
 		Apartment apartment = (Apartment)EstatesArray[id];
 		apartment.setFloor(floor);
 		apartment.setRent(rent);
@@ -85,7 +85,6 @@ public class EstateManager {
 		apartment.setStreet(street);
 		apartment.setStreetNumber(streetnumber);
 		apartment.setSquareArea(squarearea);
-		apartment.setAgent(agent);
 		apartment.save();
 	}
 	
@@ -101,13 +100,15 @@ public class EstateManager {
 			if(estate.equals("house")){selectSQL = "DELETE FROM house WHERE houseid=?";}
 			else{selectSQL = "DELETE FROM apartment WHERE apartmentid=?";}
 			
-			PreparedStatement pstmt = con.prepareStatement(selectSQL, id);
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+			pstmt.setInt(1, id);
 
 			// Führe Anfrage aus
 			pstmt.executeUpdate();
 			
 			selectSQL = "DELETE FROM estate WHERE id=?";
-			pstmt = con.prepareStatement(selectSQL, id);
+			pstmt = con.prepareStatement(selectSQL);
+			pstmt.setInt(1, id);
 			EstatesArray[id] = null;
 			estateCount--;
 		
@@ -158,7 +159,7 @@ public class EstateManager {
 		else if(EstatesArray[id] instanceof Apartment) {
 			return "apartment";
 		}
-		return null;
+		return "No Estate";
 	}
 	
 	public Boolean checkForApartment(int id) {
@@ -167,14 +168,15 @@ public class EstateManager {
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Erzeuge Anfrage
-			String selectSQL = "SELECT 2 FROM apartment WHERE apartmentid = ?";
-			PreparedStatement pstmt = con.prepareStatement(selectSQL, id);
+			String selectSQL = "SELECT COUNT(*) FROM apartment WHERE apartmentid = ? ";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+			pstmt.setInt(1, id);
 			
 			// Führe Anfrage aus
 			ResultSet rs = pstmt.executeQuery();
 			rs.next();
 					
-			if(rs.isBeforeFirst()) {
+			if(rs.getInt(1) == 1) {
 				return true;
 			}
 		} catch (SQLException e) {
@@ -182,6 +184,10 @@ public class EstateManager {
 			return false;
 		}
 		return false;
+	}
+	
+	public boolean isValidEstate(int id) {
+		return !(EstatesArray[id] == null);
 	}
 
 }

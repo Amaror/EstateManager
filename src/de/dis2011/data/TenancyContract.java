@@ -56,7 +56,7 @@ public class TenancyContract extends Contract{
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Erzeuge Anfrage
-			String selectSQL = "SELECT * FROM tenancycontract WHERE contractid = ?";
+			String selectSQL = "SELECT * FROM tenancycontract WHERE tcontractid = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
 
@@ -124,7 +124,7 @@ public class TenancyContract extends Contract{
 				pstmt.setInt(1, getStartDate());
 				pstmt.setInt(2, getDuration());
 				pstmt.setInt(3, getAddCost());
-				pstmt.setInt(4, getPlaceID());
+				pstmt.setInt(4, getBuyer());
 				
 				pstmt.executeUpdate();
 
@@ -139,7 +139,7 @@ public class TenancyContract extends Contract{
 				pstmt.setInt(1, getDate());
 				pstmt.setInt(2, getPlaceID());
 
-				updateSQL = "UPDATE tenancycontract SET startdate = ?, duration = ?, addcosts = ?, tbuyer = ? WHERE contractid = ?";
+				updateSQL = "UPDATE tenancycontract SET startdate = ?, duration = ?, addcosts = ?, tbuyer = ? WHERE tcontractid = ?";
 				pstmt = con.prepareStatement(updateSQL);
 				
 				// Setze Anfrage Parameter

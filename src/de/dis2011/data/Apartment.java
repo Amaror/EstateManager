@@ -74,7 +74,7 @@ public class Apartment extends Estate{
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Erzeuge Anfrage
-			String selectSQL = "SELECT * FROM apartment WHERE estateid = ?";
+			String selectSQL = "SELECT * FROM apartment WHERE apartmentid = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
 
@@ -98,6 +98,7 @@ public class Apartment extends Estate{
 
 				// Führe Anfrage aus
 				rs = pstmt.executeQuery();
+				rs.next();
 				
 				ts.setID(id);
 				ts.setCity(rs.getString("city"));

@@ -52,6 +52,7 @@ public class ApplicationManager {
 					switchToEstateMenu();
 					break;
 				case MENU_CONTRACT:
+					showContractMenu();
 					break;
 				case QUIT:
 					return;
@@ -134,7 +135,40 @@ public class ApplicationManager {
 					newEstate();
 					break;
 				case CHANGE_ESTATE:
-					if(estateManager.getEstateCount() > 0){changeAgent();}
+					if(estateManager.getEstateCount() > 0){changeEstate();}
+					else{System.out.println("Keine Estates gefunden. Erstelle neue Estates um diese zu bearbeiten.");}
+					break;
+				case BACK:
+					return;
+			}
+		}
+	}
+	
+	public void showContractMenu(){
+		final int CREATE_PERSON = 0;
+		final int CREATE_CONTRACT = 1;
+		final int SHOW_CONTRACT = 2;
+		final int BACK = 3;
+		
+		Menu contractMenu = new Menu("Vertrag-Verwaltung");
+		contractMenu.addEntry("Neue Person", CREATE_PERSON);
+		contractMenu.addEntry("Vertrag unterzeichnen", CREATE_CONTRACT);
+		contractMenu.addEntry("Verträge zeigen", SHOW_CONTRACT);
+		contractMenu.addEntry("Zurück zum Hauptmenü", BACK);
+		
+		//Verarbeite Eingabe
+		while(true) {
+			int response = contractMenu.show();
+			
+			switch(response) {
+				case CREATE_PERSON:
+					newPerson();
+					break;
+				case CREATE_CONTRACT:
+					newContract();
+					break;
+				case SHOW_CONTRACT:
+					if(contractManager.getContractCount() > 0){showContracts();}
 					else{System.out.println("Keine Estates gefunden. Erstelle neue Estates um diese zu bearbeiten.");}
 					break;
 				case BACK:
@@ -267,9 +301,12 @@ public class ApplicationManager {
 				Apartment a = Apartment.load(x);
 				System.out.println("Estate-ID: " + a.getID() + " Floor: " + a.getFloor() + " Rent: " + a.getRent() + " Rooms: " + a.getRooms() + " Balcony: " + a.getBalcony() + " Built-in-Kitchen: " + a.getBuiltInKitchen() + " City: " + a.getCity() + " Postal Code: " + a.getPCode() + " Street: " + a.getStreet() + " Street Number: " + a.getStreetNumber() + " Square Area: " + a.getSquareArea() + " Agent-ID: " + a.getAgent());
 			}
-			else{
+			else if(estateManager.checkEstate(x).equals("house")){
 				House a = House.load(x);
 				System.out.println("Estate-ID: " + a.getID() + " Floors: " + a.getFloor() + " Price: " + a.getPrice() + " Garden: " + a.getGarden() + " City: " + a.getCity() + " Postal Code: " + a.getPCode() + " Street: " + a.getStreet() + " Street Number: " + a.getStreetNumber() + " Square Area: " + a.getSquareArea() + " Agent-ID: " + a.getAgent());
+			}
+			else{
+				System.out.println("Keine Estate mit der ID: " + x);
 			}
 		}
 		int id = FormUtil.readInt("Zu ändernde Estate-ID");
@@ -283,42 +320,110 @@ public class ApplicationManager {
 		agentMenu.addEntry("Estate löschen", DELETE_ESTATE);
 		agentMenu.addEntry("Abbrechen", BACK);
 		
-		if(estateManager.checkEstate(id).equals("apartment")){
-			Apartment b = Apartment.load(id);
-		}
-		else{
-			House b = House.load(id);
-		}
-		
 		while(true) {
 			int response = agentMenu.show();
 			
 			switch(response) {
 				case CHANGE_ESTATE:
-					String city = FormUtil.readString("Alter Name: " + b.getName() + " Neuer Name");
-					String  = FormUtil.readString("Alte Adresse: " + b.getAddress() + " Neue Adresse");
-					String login = FormUtil.readString("Alter Login: " + b.getLogin() + " Neuer Login");
-					String password = FormUtil.readString("Altes Password: " + b.getPassword() + " Neues Password");
-					if(b instanceof Apartment){
-						
-					}
-					String name = FormUtil.readString("Alter Name: " + b.getName() + " Neuer Name");
-					String address = FormUtil.readString("Alte Adresse: " + b.getAddress() + " Neue Adresse");
-					String login = FormUtil.readString("Alter Login: " + b.getLogin() + " Neuer Login");
-					String password = FormUtil.readString("Altes Password: " + b.getPassword() + " Neues Password");
-					
-					agentManager.changeAgent(name, address, login, password, id);
+					if(estateManager.checkEstate(id).equals("apartment")){
+						Apartment b = Apartment.load(id);
+						String city = FormUtil.readString("Alter Name: " + b.getCity() + " Neuer Name");
+						int postalcode = FormUtil.readInt("Alte Adresse: " + b.getPCode() + " Neue Adresse");
+						String street = FormUtil.readString("Alter Login: " + b.getStreet() + " Neuer Login");
+						int streetnumber = FormUtil.readInt("Altes Password: " + b.getStreetNumber() + " Neues Password");
+						int squarearea = FormUtil.readInt("Alter Login: " + b.getSquareArea() + " Neuer Login");
+						int floor = FormUtil.readInt("Alter Name: " + b.getFloor() + " Neuer Name");
+						int rent = FormUtil.readInt("Alte Adresse: " + b.getRent() + " Neue Adresse");
+						int rooms = FormUtil.readInt("Alter Name: " + b.getRooms() + " Neuer Name");
+						boolean balcony = (FormUtil.readInt("Alte Adresse: " + b.getBalcony() + " Neue Adresse") == 1);
+						boolean builtinkitchen = (FormUtil.readInt("Alter Name: " + b.getBuiltInKitchen() + " Neuer Name") == 1);
+						estateManager.changeApartment(floor, rent, rooms, balcony, builtinkitchen, city, postalcode, street, streetnumber, squarearea, id);
+					}else{
+						House b = House.load(id);
+						String city = FormUtil.readString("Alter Name: " + b.getCity() + " Neuer Name");
+						int postalcode = FormUtil.readInt("Alte Adresse: " + b.getPCode() + " Neue Adresse");
+						String street = FormUtil.readString("Alter Login: " + b.getStreet() + " Neuer Login");
+						int streetnumber = FormUtil.readInt("Altes Password: " + b.getStreetNumber() + " Neues Password");
+						int squarearea = FormUtil.readInt("Alter Login: " + b.getSquareArea() + " Neuer Login");
+						int floor = FormUtil.readInt("Alter Name: " + b.getFloor() + " Neuer Name");
+						int price = FormUtil.readInt("Alte Adresse: " + b.getPrice() + " Neue Adresse");
+						boolean garden = (FormUtil.readInt("Alter Name: " + b.getGarden() + " Neuer Name") == 1);
+						estateManager.changeHouse(floor, price, garden, city, postalcode, street, streetnumber, squarearea, id);
+					}	
 					break;
 				case DELETE_ESTATE:
-					agentManager.deleteAgent(b.getId());
+					estateManager.deleteEstate(id);
 					break;
 				case BACK:
 					return;
 			}
-			
+		}
+	}
+	
+	public void newPerson(){
+		String firstname = FormUtil.readString("Vorname");
+		String lastname = FormUtil.readString("Nachname");
+		String adress = FormUtil.readString("Adresse");
+		
+		int id = personManager.addPerson(firstname, lastname, adress);
+		
+		System.out.println("Person mit der ID "+id+" wurde erzeugt.");
+	}
+	
+	public void newContract(){		
+		int buyer = 0;
+		boolean searchBuyer = true;
+		while(searchBuyer) {
+			buyer = FormUtil.readInt("Es stehen Käufer der ID's von 1 bis " + personManager.getPersonCount() + " zur Verfügung. Wähle:");
+			if(!(buyer > personManager.getPersonCount() || buyer < 1)){
+				searchBuyer = false;
+			} else {
+				System.out.println("Käufer existiert nicht. Bitte gültige Käufer eingeben.");
+			}
 		}
 		
+		int estate = 0;
+		boolean searchEstate = true;
+		while(searchEstate) {
+			estate = FormUtil.readInt("Es stehen Häuser der ID's von 1 bis " + estateManager.getEstateCount() + " zur Verfügung. Wähle:");
+			if(estateManager.isValidEstate(estate)){
+				searchEstate = false;
+			} else {
+				System.out.println("Estate nicht gültig. Bitte gültige Estate eingeben.");
+			}
+		}
 		
+		if(estateManager.checkEstate(estate).equals("apartment")){
+			int date = FormUtil.readInt("Datum");
+			int startdate = FormUtil.readInt("Startdatum");
+			int duration = FormUtil.readInt("Dauer");
+			int addcost = FormUtil.readInt("Zusatzkosten");
+			int id = contractManager.addTenancyContract(startdate, duration, addcost, buyer, date, estate);
+			System.out.println("Mietvertrag mit der Nummer "+id+" wurde unterschrieben.");			
+		} else {
+			int date = FormUtil.readInt("Datum");
+			int nooinstallments = FormUtil.readInt("Anzahl an Zahlungen");
+			int interestrate = FormUtil.readInt("Zinssatz");
+			int id = contractManager.addPurchaseContract(nooinstallments, interestrate, buyer, date, estate);
+			System.out.println("Kaufvertrag mit der Nummer "+id+" wurde unterschrieben.");
+		}
+		
+	}
+	
+	public void showContracts(){
+		for(int x = 1; x < (contractManager.getContractCount()+1); x++){
+			if(contractManager.checkContract(x).equals("TenancyContract")){
+				TenancyContract a = TenancyContract.load(x);
+				System.out.println("Vertragnummer: " + a.getContractNo() +  "Datum: " + a.getDate() +  "Startdarum: " + a.getStartDate() +  "Dauer: " + a.getDuration() +  "Zusatzkosten: " + a.getAddCost() +  "Estate-ID: " + a.getPlaceID() +  "Käufer-ID: " + a.getBuyer());
+			}
+			else if(contractManager.checkContract(x).equals("PurchaseContract")){
+				PurchaseContract a = PurchaseContract.load(x);
+				System.out.println("Vertragnummer: " + a.getContractNo() +  "Datum: " + a.getDate() +  "Anzahl an Zahlungen: " + a.getNoOInstallments() +  "Zinssatz: " + a.getInterestRate() +  "Estate-ID: " + a.getPlaceID() +  "Käufer-ID: " + a.getBuyer());
+			}
+			else{
+				System.out.println("Kein Vertrag mit der ID: " + x + "gefunden.");
+			}
+		}
 	}
 	
 }

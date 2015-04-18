@@ -1,3 +1,14 @@
+DROP TABLE estateagent;
+DROP TABLE estate;
+DROP TABLE house;
+DROP TABLE apartment;
+DROP TABLE contract;
+DROP TABLE tenancycontract;
+DROP TABLE purchasecontract;
+DROP TABLE person;
+
+
+
 CREATE TABLE estateagent(
 	aid INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
 	name varchar(255) 	,
@@ -14,7 +25,7 @@ CREATE TABLE estate(
 	streetnumber INTEGER NOT NULL,
 	squarearea INTEGER 	NOT NULL,
 	agentid INTEGER	,
-	CONSTRAINT ref_agentid FOREIGN KEY(agentid) REFERENCES estateagent(aid),	
+	CONSTRAINT ref_agentid FOREIGN KEY(agentid) REFERENCES estateagent(aid)
 );
 
 CREATE TABLE apartment(
@@ -46,7 +57,7 @@ CREATE TABLE contract(
 	cid INTEGER	PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
 	date INTEGER		NOT NULL,
 	placeid INTEGER	,	
-	Constraint ref_placeid FOREIGN KEY(placeid) REFERENCES estate(id),
+	Constraint ref_placeid FOREIGN KEY(placeid) REFERENCES estate(id)
 );
 
 CREATE TABLE tenancycontract(

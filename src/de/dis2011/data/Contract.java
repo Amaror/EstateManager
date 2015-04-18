@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public abstract class Contract {
 	
-	private int ContractNo;
+	private int ContractNo = -1;
 	private int Date;
 	private int PlaceID;
 	

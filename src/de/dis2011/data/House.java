@@ -63,7 +63,7 @@ public class House extends Estate{
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				House ts = new House();
-				ts.setFloor(rs.getInt("floor"));
+				ts.setFloor(rs.getInt("floors"));
 				ts.setPrice(rs.getInt("price"));
 				if(rs.getInt("garden") == 1){ts.setGarden(true);}else{ts.setGarden(false);};
 				ts.setEstate(rs.getInt("houseid"));
@@ -77,6 +77,7 @@ public class House extends Estate{
 
 				// Führe Anfrage aus
 				rs = pstmt.executeQuery();
+				rs.next();
 				
 				ts.setID(id);
 				ts.setCity(rs.getString("city"));

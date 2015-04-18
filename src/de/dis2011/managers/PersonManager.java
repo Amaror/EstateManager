@@ -10,6 +10,7 @@ import de.dis2011.data.*;
 public class PersonManager {
 	
 private Person[] PersonsArray;
+private int numberOfPersons;
 	
 	public PersonManager() {
 		PersonsArray = new Person[50];
@@ -19,13 +20,19 @@ private Person[] PersonsArray;
 		return PersonsArray[id];
 	}
 	
-	public void addPerson(String firstname, String name, String adress) {
+	public int addPerson(String firstname, String name, String adress) {
 		Person person = new Person();
 		person.setFirstName(firstname);
 		person.setName(name);
 		person.setAdress(adress);
 		person.save();
 		PersonsArray[person.getPID()] = person;
+		numberOfPersons++;
+		return person.getPID();
+	}
+	
+	public int getPersonCount(){
+		return numberOfPersons;
 	}
 	
 	public void loadContracts() {
@@ -43,6 +50,7 @@ private Person[] PersonsArray;
 			
 			rs.next();
 			count = rs.getInt(1);
+			numberOfPersons = count;
 			
 			for(int x = 1; x < count + 1; x++) {
 				Person person = Person.load(x);
