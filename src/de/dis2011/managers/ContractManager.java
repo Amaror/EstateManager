@@ -55,7 +55,8 @@ private Contract[] ContractsArray;
 			// Führe Anfrage aus
 			ResultSet rs = pstmt.executeQuery();
 			
-			count = rs.getInt("NumberOfContracts");
+			rs.next();
+			count = rs.getInt(1);
 			
 			for(int x = 1; x < count + 1; x++) {
 				TenancyContract tenancy = TenancyContract.load(x);

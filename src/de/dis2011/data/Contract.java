@@ -45,7 +45,7 @@ public abstract class Contract {
 			if (getContractNo() == -1) {
 				// Achtung, hier wird noch ein Parameter mitgegeben,
 				// damit spC$ter generierte IDs zurC<ckgeliefert werden!
-				String insertSQL = "INSERT INTO estate(date, placeid) VALUES (?, ?)";
+				String insertSQL = "INSERT INTO contract(date, placeid) VALUES (?, ?)";
 
 				PreparedStatement pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -66,7 +66,7 @@ public abstract class Contract {
 				pstmt.close();
 			} else {
 				// Falls schon eine ID vorhanden ist, mache ein Update...
-				String updateSQL = "UPDATE estate SET date = ?, placeid = ? WHERE contractno = ?";
+				String updateSQL = "UPDATE person SET date = ?, placeid = ? WHERE cid = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter

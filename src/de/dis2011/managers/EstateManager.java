@@ -9,16 +9,22 @@ import de.dis2011.data.*;
 public class EstateManager {
 	
 	private Estate[] EstatesArray;
+	private int estateCount;
 	
 	public EstateManager() {
 		EstatesArray = new Estate[50];
+		estateCount = 0;
 	}
 	
 	public Estate getEstate(int id) {
 		return EstatesArray[id];
 	}
 	
-	public void addHouse(int floor, int price, boolean garden, String city, int postalcode, String street, int streetnumber, int squarearea, int agent) {
+	public int getEstateCount(){
+		return estateCount;
+	}
+	
+	public int addHouse(int floor, int price, boolean garden, String city, int postalcode, String street, int streetnumber, int squarearea, int agent) {
 		House newhouse = new House();
 		newhouse.setFloor(floor);
 		newhouse.setPrice(price);
@@ -31,9 +37,11 @@ public class EstateManager {
 		newhouse.setAgent(agent);
 		newhouse.save();
 		EstatesArray[newhouse.getID()] = newhouse;
+		estateCount++;
+		return newhouse.getID();
 	}
 	
-	public void addApartment(int floor, int rent, int rooms, boolean balcony, boolean builtinkitchen, String city, int postalcode, String street, int streetnumber, int squarearea, int agent) {
+	public int addApartment(int floor, int rent, int rooms, boolean balcony, boolean builtinkitchen, String city, int postalcode, String street, int streetnumber, int squarearea, int agent) {
 		Apartment newapartment = new Apartment();
 		newapartment.setFloor(floor);
 		newapartment.setRent(rent);
@@ -48,6 +56,65 @@ public class EstateManager {
 		newapartment.setAgent(agent);
 		newapartment.save();
 		EstatesArray[newapartment.getID()] = newapartment;
+		estateCount++;
+		return newapartment.getID();
+	}
+	
+	public void changeHouse(int floor, int price, boolean garden, String city, int postalcode, String street, int streetnumber, int squarearea, int agent, int id) {
+		House house = (House)EstatesArray[id];
+		house.setFloor(floor);
+		house.setPrice(price);
+		house.setGarden(garden);
+		house.setCity(city);
+		house.setPCode(postalcode);
+		house.setStreet(street);
+		house.setStreetNumber(streetnumber);
+		house.setSquareArea(squarearea);
+		house.setAgent(agent);
+		house.save();
+	}
+	
+	public void changeApartment(int floor, int rent, int rooms, boolean balcony, boolean builtinkitchen, String city, int postalcode, String street, int streetnumber, int squarearea, int agent, int id) {
+		Apartment apartment = (Apartment)EstatesArray[id];
+		apartment.setFloor(floor);
+		apartment.setRent(rent);
+		apartment.setRooms(rooms);
+		apartment.setBalcony(balcony);
+		apartment.setBuiltInKitchen(builtinkitchen);
+		apartment.setCity(city);
+		apartment.setStreet(street);
+		apartment.setStreetNumber(streetnumber);
+		apartment.setSquareArea(squarearea);
+		apartment.setAgent(agent);
+		apartment.save();
+	}
+	
+	public void deleteEstate(int id) {
+		try{
+			String estate = checkEstate(id);
+			
+			// Hole Verbindung
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+			// Erzeuge Anfrage
+			String selectSQL;
+			if(estate.equals("house")){selectSQL = "DELETE FROM house WHERE houseid=?";}
+			else{selectSQL = "DELETE FROM apartment WHERE apartmentid=?";}
+			
+			PreparedStatement pstmt = con.prepareStatement(selectSQL, id);
+
+			// Führe Anfrage aus
+			pstmt.executeUpdate();
+			
+			selectSQL = "DELETE FROM estate WHERE id=?";
+			pstmt = con.prepareStatement(selectSQL, id);
+			EstatesArray[id] = null;
+			estateCount--;
+		
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void loadEstates() {
@@ -63,15 +130,17 @@ public class EstateManager {
 			// Führe Anfrage aus
 			ResultSet rs = pstmt.executeQuery();
 			
-			count = rs.getInt("NumberOfEstates");
+			rs.next();
+			count = rs.getInt(1);
+			estateCount = count;
 			
 			for(int x = 1; x < count + 1; x++) {
-				Apartment apartment = Apartment.load(x);
-				if(apartment == null) {
+				if(!checkForApartment(x)) {
 					House house = House.load(x);
 					EstatesArray[x] = house;
 				}
-				else{
+				else {
+					Apartment apartment = Apartment.load(x);
 					EstatesArray[x] = apartment;
 				}
 				
@@ -84,12 +153,35 @@ public class EstateManager {
 	
 	public String checkEstate(int id) {
 		if(EstatesArray[id] instanceof House) {
-			return "House";
+			return "house";
 		}
 		else if(EstatesArray[id] instanceof Apartment) {
-			return "Apartment";
+			return "apartment";
 		}
 		return null;
+	}
+	
+	public Boolean checkForApartment(int id) {
+		try{
+			// Hole Verbindung
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+			// Erzeuge Anfrage
+			String selectSQL = "SELECT 2 FROM apartment WHERE apartmentid = ?";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL, id);
+			
+			// Führe Anfrage aus
+			ResultSet rs = pstmt.executeQuery();
+			rs.next();
+					
+			if(rs.isBeforeFirst()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
 	}
 
 }

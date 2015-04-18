@@ -1,63 +1,69 @@
-CREATE TABLE Estate(
-	ID int 			PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
-	City varchar(255) 	NOT NULL,
-	PostalCode int 	NOT NULL,
-	Street varchar(255) NOT NULL,
-	StreetNumber int 	NOT NULL,
-	SquareArea int		NOT NULL,
-	CONSTRAINT AgentID FOREIGN KEY REFERENCES EstateAgent(AID),	
+CREATE TABLE estateagent(
+	aid INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+	name varchar(255) 	,
+	address varchar(255) 	,
+	login varchar(255) 	,
+	password varchar(255)	
 );
 
-CREATE TABLE Apartment(
-	Floor int			,
-	Rent int 			,
-	Rooms int 		,
-	Balcony byte		,
-	Built-in Kitchen byte	,
-	CONSTRAINT EstateID FOREIGN KEY REFERENCES Estate(ID)
+CREATE TABLE estate(
+	id INTEGER		PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+	city varchar(255) 	NOT NULL,
+	postalcode INTEGER 	NOT NULL,
+	street varchar(255) NOT NULL,
+	streetnumber INTEGER NOT NULL,
+	squarearea INTEGER 	NOT NULL,
+	agentid INTEGER	,
+	CONSTRAINT ref_agentid FOREIGN KEY(agentid) REFERENCES estateagent(aid),	
 );
 
-CREATE TABLE HOUSE(
-	Floors int 		,
-	Price int 		,
-	Garden byte		,
-	CONSTRAINT EstateID FOREIGN KEY REFERENCES Estate(ID)
-)
-
-CREATE TABLE EstateAgent(
-	AID int			PRIMARY KEY
-	Name varchar(255) 	,
-	Adress varchar(255) 	,
-	Login varchar(255) 	,
-	Password varchar(255)	
+CREATE TABLE apartment(
+	floor INTEGER		,
+	rent INTEGER		,
+	rooms INTEGER 		,
+	balcony SMALLINT		,
+	builtinkitchen SMALLINT	,
+	apartmentid INTEGER	,
+	CONSTRAINT ref_estateida FOREIGN KEY(apartmentid) REFERENCES estate(id)
 );
 
-CREATE TABLE Person(
-	PID int				PRIMARY KEY,
-	FirstName varchar(255)	,
-	Name varchar(255)		,
-	Adress varchar(255)	
+CREATE TABLE house(
+	floors INTEGER		,
+	price INTEGER 		,
+	garden SMALLINT	,
+	houseid INTEGER	,
+	CONSTRAINT ref_estateidh FOREIGN KEY(houseid) REFERENCES estate(id)
 );
 
-CREATE TABLE Contract(
-	ContractNo int 	PRIMARY KEY,
-	Date int 			NOT NULL,
-	Constraint Place(ID) FOREIGN KEY REFERENCES Estate(ID),
+CREATE TABLE person(
+	pid INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+	firstname varchar(255)	,
+	lastname varchar(255)		,
+	padress varchar(255)	
 );
 
-CREATE TABLE TenancyContract(
-	STARTDATE int 		,
-	Duration int 		,
-	AddCosts int 		,
-	CONSTRAINT ContractNo FOREIGN KEY REFERENCES Contract(ContractNo),
-	CONSTRAINT EstateID FOREIGN KEY REFERENCES Apartment(EstateID),
-	CONSTRAINT Buyer FOREIGN KEY REFERENCES Person(PID)
+CREATE TABLE contract(
+	cid INTEGER	PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+	date INTEGER		NOT NULL,
+	placeid INTEGER	,	
+	Constraint ref_placeid FOREIGN KEY(placeid) REFERENCES estate(id),
 );
 
-CREATE TABLE PurchaseContract(
-	NoOInstallments int	,
-	InterestRate int 	,
-	CONSTRAINT ContractNo FOREIGN KEY REFERENCES Contract(ContractNo),
-	CONSTRAINT EstateID FOREIGN KEY REFERENCES Apartment(EstateID),
-	CONSTRAINT Buyer FOREIGN KEY REFERENCES Person(PID)
-)
+CREATE TABLE tenancycontract(
+	startdate INTEGER	,
+	duration INTEGER	,
+	addcosts INTEGER	,
+	tcontractid INTEGER	,
+	CONSTRAINT ref_contractidt FOREIGN KEY(tcontractid) REFERENCES contract(cid),
+	tbuyer INTEGER		,
+	CONSTRAINT ref_buyert FOREIGN KEY(tbuyer) REFERENCES person(pid)
+);
+
+CREATE TABLE purchasecontract(
+	nooinstallments INTEGER	,
+	interestrate INTEGER 	,
+	pcontractid INTEGER		,
+	CONSTRAINT ref_contractidp FOREIGN KEY(pcontractid) REFERENCES contract(cid),
+	pbuyer INTEGER			,
+	CONSTRAINT ref_buyerp FOREIGN KEY(pbuyer) REFERENCES person(pid)
+);

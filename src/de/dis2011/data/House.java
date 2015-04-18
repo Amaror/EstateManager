@@ -55,7 +55,7 @@ public class House extends Estate{
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Erzeuge Anfrage
-			String selectSQL = "SELECT * FROM house WHERE estateid = ?";
+			String selectSQL = "SELECT * FROM house WHERE houseid = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
 
@@ -65,8 +65,8 @@ public class House extends Estate{
 				House ts = new House();
 				ts.setFloor(rs.getInt("floor"));
 				ts.setPrice(rs.getInt("price"));
-				ts.setGarden(rs.getBoolean("garden"));
-				ts.setEstate(rs.getInt("estateid"));
+				if(rs.getInt("garden") == 1){ts.setGarden(true);}else{ts.setGarden(false);};
+				ts.setEstate(rs.getInt("houseid"));
 
 				rs.close();
 				pstmt.close();
@@ -103,7 +103,7 @@ public class House extends Estate{
 			if (getID() == -1) {
 				// Achtung, hier wird noch ein Parameter mitgegeben,
 				// damit spC$ter generierte IDs zurC<ckgeliefert werden!
-				String insertSQL = "INSERT INTO estate(city, postcode, street, streetnumber, squarearea, agentid) VALUES (?, ?, ?, ?, ?, ?)";
+				String insertSQL = "INSERT INTO estate(city, postalcode, street, streetnumber, squarearea, agentid) VALUES (?, ?, ?, ?, ?, ?)";
 
 				PreparedStatement pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -125,7 +125,7 @@ public class House extends Estate{
 					setEstate(rs.getInt(1));
 				}
 				
-				insertSQL = "INSERT INTO house(floor, price, garden, estateid) VALUES (?, ?, ?, ?)";
+				insertSQL = "INSERT INTO house(floors, price, garden, houseid) VALUES (?, ?, ?, ?)";
 
 				pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -133,7 +133,7 @@ public class House extends Estate{
 				// Setze Anfrageparameter und fC<hre Anfrage aus
 				pstmt.setInt(1, getFloor());
 				pstmt.setInt(2, getPrice());
-				pstmt.setBoolean(3, getGarden());
+				if(getGarden()){pstmt.setInt(3, 1);}else{pstmt.setInt(3, 0);};
 				pstmt.setInt(4, getEstate());
 				
 				pstmt.executeUpdate();
@@ -142,7 +142,7 @@ public class House extends Estate{
 				pstmt.close();
 			} else {
 				// Falls schon eine ID vorhanden ist, mache ein Update...
-				String updateSQL = "UPDATE estate SET city = ?, postcode = ?, street = ?, streetnumber = ?, squarearea = ?, agentid = ? WHERE id = ?";
+				String updateSQL = "UPDATE estate SET city = ?, postalcode = ?, street = ?, streetnumber = ?, squarearea = ?, agentid = ? WHERE id = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
@@ -153,13 +153,13 @@ public class House extends Estate{
 				pstmt.setInt(5, getSquareArea());
 				pstmt.setInt(6, getAgent());
 				
-				updateSQL = "UPDATE house SET floor = ?, price = ?, garden = ? WHERE estateid = ?";
+				updateSQL = "UPDATE house SET floors = ?, price = ?, garden = ? WHERE houseid = ?";
 				pstmt = con.prepareStatement(updateSQL);
 				
 				// Setze Anfrage Parameter
 				pstmt.setInt(1, getFloor());
 				pstmt.setInt(2, getPrice());
-				pstmt.setBoolean(3, getGarden());
+				if(getGarden()){pstmt.setInt(3, 1);}else{pstmt.setInt(3, 0);};
 
 				pstmt.close();
 			}

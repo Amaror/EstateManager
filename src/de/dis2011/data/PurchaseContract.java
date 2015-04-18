@@ -47,7 +47,7 @@ public class PurchaseContract extends Contract{
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Erzeuge Anfrage
-			String selectSQL = "SELECT * FROM purchasecontract WHERE contractno = ?";
+			String selectSQL = "SELECT * FROM purchasecontract WHERE contractid = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
 
@@ -57,12 +57,12 @@ public class PurchaseContract extends Contract{
 				PurchaseContract ts = new PurchaseContract();
 				ts.setNoOInstallments(rs.getInt("nooinstallments"));
 				ts.setInterestRate(rs.getInt("interestrate"));
-				ts.setBuyer(rs.getInt("buyer"));
+				ts.setBuyer(rs.getInt("pbuyer"));
 
 				rs.close();
 				pstmt.close();
 				
-				selectSQL = "SELECT * FROM contract WHERE contractno = ?";
+				selectSQL = "SELECT * FROM contract WHERE cid = ?";
 				pstmt = con.prepareStatement(selectSQL);
 				pstmt.setInt(1, id);
 
@@ -105,7 +105,7 @@ public class PurchaseContract extends Contract{
 					setContractNo(rs.getInt(1));
 				}
 				
-				insertSQL = "INSERT INTO purchasecontract(startdate, duration, addcost, placeid) VALUES (?, ?, ?, ?)";
+				insertSQL = "INSERT INTO purchasecontract(startdate, duration, addcost, pbuyer) VALUES (?, ?, ?, ?)";
 
 				pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -121,14 +121,14 @@ public class PurchaseContract extends Contract{
 				pstmt.close();
 			} else {
 				// Falls schon eine ID vorhanden ist, mache ein Update...
-				String updateSQL = "UPDATE contract SET date = ?, placeid = ? WHERE contractno = ?";
+				String updateSQL = "UPDATE contract SET date = ?, placeid = ? WHERE cid = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
 				pstmt.setInt(1, getDate());
 				pstmt.setInt(2, getPlaceID());
 
-				updateSQL = "UPDATE tenancycontract SET startdate = ?, duration = ?, addcost = ?, buyer = ? WHERE contractno = ?";
+				updateSQL = "UPDATE tenancycontract SET startdate = ?, duration = ?, addcost = ?, pbuyer = ? WHERE contractid = ?";
 				pstmt = con.prepareStatement(updateSQL);
 				
 				// Setze Anfrage Parameter

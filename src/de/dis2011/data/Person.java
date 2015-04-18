@@ -58,7 +58,7 @@ public class Person {
 				Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 				// Erzeuge Anfrage
-				String selectSQL = "SELECT * FROM estate WHERE id = ?";
+				String selectSQL = "SELECT * FROM person WHERE pid = ?";
 				PreparedStatement pstmt = con.prepareStatement(selectSQL);
 				pstmt.setInt(1, id);
 
@@ -68,7 +68,7 @@ public class Person {
 					Person ts = new Person();
 					ts.setPID(id);
 					ts.setFirstName(rs.getString("firstname"));
-					ts.setName(rs.getString("name"));
+					ts.setName(rs.getString("lastname"));
 					ts.setAdress(rs.getString("adress"));
 
 					rs.close();
@@ -90,13 +90,12 @@ public class Person {
 				if (getPID() == -1) {
 					// Achtung, hier wird noch ein Parameter mitgegeben,
 					// damit spC$ter generierte IDs zurC<ckgeliefert werden!
-					String insertSQL = "INSERT INTO person(pid, firstname, name, adress) VALUES (?, ?, ?, ?)";
+					String insertSQL = "INSERT INTO person(pid, firstname, lastname, adress) VALUES (?, ?, ?, ?)";
 
 					PreparedStatement pstmt = con.prepareStatement(insertSQL,
 							Statement.RETURN_GENERATED_KEYS);
 
 					// Setze Anfrageparameter und fC<hre Anfrage aus
-					pstmt.setInt(1, getPID());
 					pstmt.setString(2, getFirstName());
 					pstmt.setString(3, getName());
 					pstmt.setString(4, getAdress());
@@ -113,7 +112,7 @@ public class Person {
 					pstmt.close();
 				} else {
 					// Falls schon eine ID vorhanden ist, mache ein Update...
-					String updateSQL = "UPDATE person SET firstname = ?, name = ?, adress = ? WHERE pid = ?";
+					String updateSQL = "UPDATE person SET firstname = ?, lastname = ?, adress = ? WHERE pid = ?";
 					PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 					// Setze Anfrage Parameter

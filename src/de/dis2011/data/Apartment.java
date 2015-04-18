@@ -74,7 +74,7 @@ public class Apartment extends Estate{
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Erzeuge Anfrage
-			String selectSQL = "SELECT * FROM house WHERE estateid = ?";
+			String selectSQL = "SELECT * FROM apartment WHERE estateid = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
 
@@ -85,9 +85,9 @@ public class Apartment extends Estate{
 				ts.setFloor(rs.getInt("floor"));
 				ts.setRent(rs.getInt("rent"));
 				ts.setRooms(rs.getInt("rooms"));
-				ts.setBalcony(rs.getBoolean("balcony"));
-				ts.setBuiltInKitchen(rs.getBoolean("builtinkitchen"));
-				ts.setEstate(rs.getInt("estateid"));
+				if(rs.getInt("balcony") == 1){ts.setBalcony(true);}else{ts.setBalcony(false);};
+				if(rs.getInt("builtinkitchen") == 1){ts.setBuiltInKitchen(true);}else{ts.setBuiltInKitchen(false);};
+				ts.setEstate(rs.getInt("apartmentid"));
 
 				rs.close();
 				pstmt.close();
@@ -124,7 +124,7 @@ public class Apartment extends Estate{
 			if (getID() == -1) {
 				// Achtung, hier wird noch ein Parameter mitgegeben,
 				// damit spC$ter generierte IDs zurC<ckgeliefert werden!
-				String insertSQL = "INSERT INTO estate(city, postcode, street, streetnumber, squarearea, agentid) VALUES (?, ?, ?, ?, ?, ?)";
+				String insertSQL = "INSERT INTO estate(city, postalcode, street, streetnumber, squarearea, agentid) VALUES (?, ?, ?, ?, ?, ?)";
 
 				PreparedStatement pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -146,7 +146,7 @@ public class Apartment extends Estate{
 					setEstate(rs.getInt(1));
 				}
 				
-				insertSQL = "INSERT INTO apartment(floor, rent, rooms, balcony, builtinkitchen, estateid) VALUES (?, ?, ?, ?, ?, ?)";
+				insertSQL = "INSERT INTO apartment(floor, rent, rooms, balcony, builtinkitchen, apartmentid) VALUES (?, ?, ?, ?, ?, ?)";
 
 				pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -155,8 +155,8 @@ public class Apartment extends Estate{
 				pstmt.setInt(1, getFloor());
 				pstmt.setInt(2, getRent());
 				pstmt.setInt(3, getRooms());
-				pstmt.setBoolean(4, getBalcony());
-				pstmt.setBoolean(5, getBuiltInKitchen());
+				if(getBalcony()){pstmt.setInt(4, 1);}else{pstmt.setInt(4, 0);};
+				if(getBuiltInKitchen()){pstmt.setInt(5, 1);}else{pstmt.setInt(5, 0);};
 				pstmt.setInt(6, getEstate());
 				
 				pstmt.executeUpdate();
@@ -165,7 +165,7 @@ public class Apartment extends Estate{
 				pstmt.close();
 			} else {
 				// Falls schon eine ID vorhanden ist, mache ein Update...
-				String updateSQL = "UPDATE estate SET city = ?, postcode = ?, street = ?, streetnumber = ?, squarearea = ?, agentid = ? WHERE id = ?";
+				String updateSQL = "UPDATE estate SET city = ?, postalcode = ?, street = ?, streetnumber = ?, squarearea = ?, agentid = ? WHERE id = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
@@ -176,15 +176,15 @@ public class Apartment extends Estate{
 				pstmt.setInt(5, getSquareArea());
 				pstmt.setInt(6, getAgent());
 				
-				updateSQL = "UPDATE house SET floor = ?, Rent = ?, rooms = ?, balcony = ?, builtinkitchen = ? WHERE estateid = ?";
+				updateSQL = "UPDATE apartment SET floor = ?, Rent = ?, rooms = ?, balcony = ?, builtinkitchen = ? WHERE apartmentid = ?";
 				pstmt = con.prepareStatement(updateSQL);
 				
 				// Setze Anfrage Parameter
 				pstmt.setInt(1, getFloor());
 				pstmt.setInt(2, getRent());
 				pstmt.setInt(3, getRooms());
-				pstmt.setBoolean(4, getBalcony());
-				pstmt.setBoolean(5, getBuiltInKitchen());
+				if(getBalcony()){pstmt.setInt(4, 1);}else{pstmt.setInt(4, 0);};
+				if(getBuiltInKitchen()){pstmt.setInt(5, 1);}else{pstmt.setInt(5, 0);};
 
 				pstmt.close();
 			}

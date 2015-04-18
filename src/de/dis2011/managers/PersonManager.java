@@ -41,7 +41,8 @@ private Person[] PersonsArray;
 			// Führe Anfrage aus
 			ResultSet rs = pstmt.executeQuery();
 			
-			count = rs.getInt("NumberOfPersons");
+			rs.next();
+			count = rs.getInt(1);
 			
 			for(int x = 1; x < count + 1; x++) {
 				Person person = Person.load(x);

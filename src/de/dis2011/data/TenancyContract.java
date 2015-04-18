@@ -56,7 +56,7 @@ public class TenancyContract extends Contract{
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Erzeuge Anfrage
-			String selectSQL = "SELECT * FROM tenancycontract WHERE contractno = ?";
+			String selectSQL = "SELECT * FROM tenancycontract WHERE contractid = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
 
@@ -66,13 +66,13 @@ public class TenancyContract extends Contract{
 				TenancyContract ts = new TenancyContract();
 				ts.setStartDate(rs.getInt("startdate"));
 				ts.setDuration(rs.getInt("duration"));
-				ts.setAddCost(rs.getInt("addcost"));
-				ts.setBuyer(rs.getInt("buyer"));
+				ts.setAddCost(rs.getInt("addcosts"));
+				ts.setBuyer(rs.getInt("tbuyer"));
 
 				rs.close();
 				pstmt.close();
 				
-				selectSQL = "SELECT * FROM contract WHERE contractno = ?";
+				selectSQL = "SELECT * FROM contract WHERE cid = ?";
 				pstmt = con.prepareStatement(selectSQL);
 				pstmt.setInt(1, id);
 
@@ -115,7 +115,7 @@ public class TenancyContract extends Contract{
 					setContractNo(rs.getInt(1));
 				}
 				
-				insertSQL = "INSERT INTO tenancycontract(startdate, duration, addcost, placeid) VALUES (?, ?, ?, ?)";
+				insertSQL = "INSERT INTO tenancycontract(startdate, duration, addcosts, tbuyger) VALUES (?, ?, ?, ?)";
 
 				pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -132,14 +132,14 @@ public class TenancyContract extends Contract{
 				pstmt.close();
 			} else {
 				// Falls schon eine ID vorhanden ist, mache ein Update...
-				String updateSQL = "UPDATE contract SET date = ?, placeid = ? WHERE contractno = ?";
+				String updateSQL = "UPDATE contract SET date = ?, placeid = ? WHERE cid = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
 				pstmt.setInt(1, getDate());
 				pstmt.setInt(2, getPlaceID());
 
-				updateSQL = "UPDATE tenancycontract SET startdate = ?, duration = ?, addcost = ?, buyer = ? WHERE contractno = ?";
+				updateSQL = "UPDATE tenancycontract SET startdate = ?, duration = ?, addcosts = ?, tbuyer = ? WHERE contractid = ?";
 				pstmt = con.prepareStatement(updateSQL);
 				
 				// Setze Anfrage Parameter
@@ -147,6 +147,8 @@ public class TenancyContract extends Contract{
 				pstmt.setInt(2, getDuration());
 				pstmt.setInt(3, getAddCost());
 				pstmt.setInt(4, getBuyer());
+				
+				pstmt.executeUpdate();
 
 				pstmt.close();
 			}
