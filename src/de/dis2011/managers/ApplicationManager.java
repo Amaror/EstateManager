@@ -414,11 +414,11 @@ public class ApplicationManager {
 		for(int x = 1; x < (contractManager.getContractCount()+1); x++){
 			if(contractManager.checkContract(x).equals("TenancyContract")){
 				TenancyContract a = TenancyContract.load(x);
-				System.out.println("Vertragnummer: " + a.getContractNo() +  "Datum: " + a.getDate() +  "Startdarum: " + a.getStartDate() +  "Dauer: " + a.getDuration() +  "Zusatzkosten: " + a.getAddCost() +  "Estate-ID: " + a.getPlaceID() +  "Käufer-ID: " + a.getBuyer());
+				System.out.println("Mietvertragnummer: " + a.getContractNo() +  " Datum: " + a.getDate() +  " Startdarum: " + a.getStartDate() +  " Dauer: " + a.getDuration() +  " Zusatzkosten: " + a.getAddCost() +  " Estate-ID: " + a.getPlaceID() +  " Käufer-ID: " + a.getBuyer());
 			}
 			else if(contractManager.checkContract(x).equals("PurchaseContract")){
 				PurchaseContract a = PurchaseContract.load(x);
-				System.out.println("Vertragnummer: " + a.getContractNo() +  "Datum: " + a.getDate() +  "Anzahl an Zahlungen: " + a.getNoOInstallments() +  "Zinssatz: " + a.getInterestRate() +  "Estate-ID: " + a.getPlaceID() +  "Käufer-ID: " + a.getBuyer());
+				System.out.println("Kaufvertragnummer: " + a.getContractNo() +  " Datum: " + a.getDate() +  " Anzahl an Zahlungen: " + a.getNoOInstallments() +  " Zinssatz: " + a.getInterestRate() +  " Estate-ID: " + a.getPlaceID() +  " Käufer-ID: " + a.getBuyer());
 			}
 			else{
 				System.out.println("Kein Vertrag mit der ID: " + x + "gefunden.");

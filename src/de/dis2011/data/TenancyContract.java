@@ -78,10 +78,13 @@ public class TenancyContract extends Contract{
 
 				// Führe Anfrage aus
 				rs = pstmt.executeQuery();
+				rs.next();
 				
 				ts.setContractNo(id);
 				ts.setDate(rs.getInt("date"));
 				ts.setPlaceID(rs.getInt("placeid"));
+				
+				return ts;
 				}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -115,7 +118,7 @@ public class TenancyContract extends Contract{
 					setContractNo(rs.getInt(1));
 				}
 				
-				insertSQL = "INSERT INTO tenancycontract(startdate, duration, addcosts, tbuyger) VALUES (?, ?, ?, ?)";
+				insertSQL = "INSERT INTO tenancycontract(startdate, duration, addcosts, tbuyer, tcontractid) VALUES (?, ?, ?, ?, ?)";
 
 				pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -125,6 +128,7 @@ public class TenancyContract extends Contract{
 				pstmt.setInt(2, getDuration());
 				pstmt.setInt(3, getAddCost());
 				pstmt.setInt(4, getBuyer());
+				pstmt.setInt(5, getContractNo());
 				
 				pstmt.executeUpdate();
 

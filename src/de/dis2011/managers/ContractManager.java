@@ -69,12 +69,12 @@ private int contractCount;
 			contractCount = count;
 			
 			for(int x = 1; x < count + 1; x++) {
-				TenancyContract tenancy = TenancyContract.load(x);
-				if(tenancy == null) {
+				if(!checkForTenancy(x)) {
 					PurchaseContract purchase = PurchaseContract.load(x);
 					ContractsArray[x] = purchase;
 				}
 				else{
+					TenancyContract tenancy = TenancyContract.load(x);
 					ContractsArray[x] = tenancy;
 				}
 				
@@ -85,6 +85,30 @@ private int contractCount;
 		}
 	}
 	
+	public Boolean checkForTenancy(int id) {
+		try{
+			// Hole Verbindung
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+			// Erzeuge Anfrage
+			String selectSQL = "SELECT COUNT(*) FROM tenancycontract WHERE tcontractid = ? ";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+			pstmt.setInt(1, id);
+			
+			// Führe Anfrage aus
+			ResultSet rs = pstmt.executeQuery();
+			rs.next();
+					
+			if(rs.getInt(1) == 1) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
+	
 	public String checkContract(int id) {
 		if(ContractsArray[id] instanceof PurchaseContract) {
 			return "PurchaseContract";
@@ -92,7 +116,7 @@ private int contractCount;
 		else if(ContractsArray[id] instanceof TenancyContract) {
 			return "TenancyContract";
 		}
-		return null;
+		return "No Contract";
 	}
 
 }

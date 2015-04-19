@@ -68,10 +68,13 @@ public class PurchaseContract extends Contract{
 
 				// Führe Anfrage aus
 				rs = pstmt.executeQuery();
+				rs.next();
 				
 				ts.setContractNo(id);
 				ts.setDate(rs.getInt("date"));
 				ts.setPlaceID(rs.getInt("placeid"));
+				
+				return ts;
 				}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -105,7 +108,7 @@ public class PurchaseContract extends Contract{
 					setContractNo(rs.getInt(1));
 				}
 				
-				insertSQL = "INSERT INTO purchasecontract(startdate, duration, addcost, pbuyer) VALUES (?, ?, ?, ?)";
+				insertSQL = "INSERT INTO purchasecontract(nooinstallments, interestrate, pcontractid, pbuyer) VALUES (?, ?, ?, ?)";
 
 				pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -113,7 +116,8 @@ public class PurchaseContract extends Contract{
 				// Setze Anfrageparameter und fC<hre Anfrage aus
 				pstmt.setInt(1, getNoOInstallments());
 				pstmt.setInt(2, getInterestRate());
-				pstmt.setInt(4, getPlaceID());
+				pstmt.setInt(3, getContractNo());
+				pstmt.setInt(4, getBuyer());
 				
 				pstmt.executeUpdate();
 
