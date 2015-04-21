@@ -10,7 +10,6 @@ public class EstateManager {
 	
 	private Estate[] EstatesArray;
 	private int estateCount;
-	private int deletedEstates;
 	
 	public EstateManager() {
 		EstatesArray = new Estate[50];
@@ -188,6 +187,15 @@ public class EstateManager {
 	
 	public boolean isValidEstate(int id) {
 		return !(EstatesArray[id] == null);
+	}
+	
+	public boolean checkForAgentReference(int id){
+		for(Estate x: EstatesArray){
+			if(x.getAgent() == id){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

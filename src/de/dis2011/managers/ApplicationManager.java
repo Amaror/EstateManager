@@ -11,7 +11,7 @@ public class ApplicationManager {
 	private EstateManager estateManager;
 	private PersonManager personManager;
 	
-	private int loggedInAgent;
+	private int loggedInAgent = 0;
 	
 	public ApplicationManager() {
 		agentManager = new AgentManager();
@@ -109,6 +109,11 @@ public class ApplicationManager {
 		String login = FormUtil.readString("Login");
 		String password = FormUtil.readString("Passwort");
 		
+		if(loggedInAgent == 0){
+			System.out.println("Kein Agent zur Estate-Verwaltung vorhanden.");
+			return;
+		}
+		
 		if(agentManager.checkPassword(login, password) != -1) {
 			loggedInAgent = agentManager.checkPassword(login, password);
 			showEstateMenu();
@@ -197,18 +202,28 @@ public class ApplicationManager {
 	
 	public void changeAgent() {
 		for(int x = 1; x < (agentManager.getAgentCount()+1); x++){
-			Agent a = agentManager.getAgent(x);
-			System.out.println("Agent-ID: " + a.getId() + " Name: " + a.getName() + " Adresse: " + a.getAddress() + " Login: " + a.getLogin());
+			if(agentManager.checkForAgent(x)){
+				Agent a = agentManager.getAgent(x);
+				System.out.println("Agent-ID: " + a.getId() + " Name: " + a.getName() + " Adresse: " + a.getAddress() + " Login: " + a.getLogin());
+			} else{
+				System.out.println("Kein Agent mit ID " + x + " vorhanden");
+			}
 		}
 		int id = FormUtil.readInt("Zu ändernde Agenden-ID");
+		if(!agentManager.checkForAgent(id)){
+			System.out.println("Kein gültiger Agent");
+			return;
+		}
 		
 		final int CHANGE_AGENT = 0;
 		final int DELETE_AGENT = 1;
-		final int BACK = 2;
+		final int LOGIN_AGENT = 2;
+		final int BACK = 3;
 		
 		Menu agentMenu = new Menu("Agenten berarbeiten");
 		agentMenu.addEntry("Agenten bearbeiten", CHANGE_AGENT);
 		agentMenu.addEntry("Agenten löschen", DELETE_AGENT);
+		agentMenu.addEntry("Agenten anmelden", LOGIN_AGENT);
 		agentMenu.addEntry("Abbrechen", BACK);
 		
 		Agent b = agentManager.getAgent(id);
@@ -226,8 +241,19 @@ public class ApplicationManager {
 					agentManager.changeAgent(name, address, login, password, id);
 					break;
 				case DELETE_AGENT:
-					agentManager.deleteAgent(b.getId());
+					if(!estateManager.checkForAgentReference(b.getId())){
+						if(b.getId() == loggedInAgent){
+							loggedInAgent = 0;
+							System.out.println("Angemeldeter Agent wurde gelöscht. Kein Agent im Moment angemeldet.");
+						}
+						agentManager.deleteAgent(b.getId());
+					} else{
+						System.out.println("Agent verwaltet zurzeit ein oder mehrere Häuser und kann nicht entfernt werden.");
+						return;
+					}
 					break;
+				case LOGIN_AGENT:
+					loggedInAgent=b.getId();
 				case BACK:
 					return;
 			}
@@ -299,11 +325,11 @@ public class ApplicationManager {
 		for(int x = 1; x < (estateManager.getEstateCount()+1); x++){
 			if(estateManager.checkEstate(x).equals("apartment")){
 				Apartment a = Apartment.load(x);
-				System.out.println("Estate-ID: " + a.getID() + " Floor: " + a.getFloor() + " Rent: " + a.getRent() + " Rooms: " + a.getRooms() + " Balcony: " + a.getBalcony() + " Built-in-Kitchen: " + a.getBuiltInKitchen() + " City: " + a.getCity() + " Postal Code: " + a.getPCode() + " Street: " + a.getStreet() + " Street Number: " + a.getStreetNumber() + " Square Area: " + a.getSquareArea() + " Agent-ID: " + a.getAgent());
+				System.out.println("Apartment-ID: " + a.getID() + " Floor: " + a.getFloor() + " Rent: " + a.getRent() + " Rooms: " + a.getRooms() + " Balcony: " + a.getBalcony() + " Built-in-Kitchen: " + a.getBuiltInKitchen() + " City: " + a.getCity() + " Postal Code: " + a.getPCode() + " Street: " + a.getStreet() + " Street Number: " + a.getStreetNumber() + " Square Area: " + a.getSquareArea() + " Agent-ID: " + a.getAgent());
 			}
 			else if(estateManager.checkEstate(x).equals("house")){
 				House a = House.load(x);
-				System.out.println("Estate-ID: " + a.getID() + " Floors: " + a.getFloor() + " Price: " + a.getPrice() + " Garden: " + a.getGarden() + " City: " + a.getCity() + " Postal Code: " + a.getPCode() + " Street: " + a.getStreet() + " Street Number: " + a.getStreetNumber() + " Square Area: " + a.getSquareArea() + " Agent-ID: " + a.getAgent());
+				System.out.println("Haus-ID: " + a.getID() + " Floors: " + a.getFloor() + " Price: " + a.getPrice() + " Garden: " + a.getGarden() + " City: " + a.getCity() + " Postal Code: " + a.getPCode() + " Street: " + a.getStreet() + " Street Number: " + a.getStreetNumber() + " Square Area: " + a.getSquareArea() + " Agent-ID: " + a.getAgent());
 			}
 			else{
 				System.out.println("Keine Estate mit der ID: " + x);
@@ -370,7 +396,11 @@ public class ApplicationManager {
 		System.out.println("Person mit der ID "+id+" wurde erzeugt.");
 	}
 	
-	public void newContract(){		
+	public void newContract(){	
+		if(personManager.getPersonCount() == 0){
+			System.out.println("Keine Käufer vorhanden. Verträge können nicht ohne Käufer unterschrieben werden.");
+			return;
+		}
 		int buyer = 0;
 		boolean searchBuyer = true;
 		while(searchBuyer) {

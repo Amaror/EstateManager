@@ -7,8 +7,6 @@ DROP TABLE tenancycontract;
 DROP TABLE purchasecontract;
 DROP TABLE person;
 
-
-
 CREATE TABLE estateagent(
 	aid INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
 	name varchar(255) 	,
@@ -16,7 +14,6 @@ CREATE TABLE estateagent(
 	login varchar(255) 	,
 	password varchar(255)	
 );
-
 CREATE TABLE estate(
 	id INTEGER		PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
 	city varchar(255) 	NOT NULL,
@@ -27,7 +24,6 @@ CREATE TABLE estate(
 	agentid INTEGER	,
 	CONSTRAINT ref_agentid FOREIGN KEY(agentid) REFERENCES estateagent(aid)
 );
-
 CREATE TABLE apartment(
 	floor INTEGER		,
 	rent INTEGER		,
@@ -37,7 +33,6 @@ CREATE TABLE apartment(
 	apartmentid INTEGER	,
 	CONSTRAINT ref_estateida FOREIGN KEY(apartmentid) REFERENCES estate(id)
 );
-
 CREATE TABLE house(
 	floors INTEGER		,
 	price INTEGER 		,
@@ -45,21 +40,18 @@ CREATE TABLE house(
 	houseid INTEGER	,
 	CONSTRAINT ref_estateidh FOREIGN KEY(houseid) REFERENCES estate(id)
 );
-
 CREATE TABLE person(
 	pid INTEGER PRIMARY KEY NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
 	firstname varchar(255)	,
 	lastname varchar(255)		,
 	padress varchar(255)	
 );
-
 CREATE TABLE contract(
 	cid INTEGER	PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
 	date INTEGER		NOT NULL,
 	placeid INTEGER	,	
 	Constraint ref_placeid FOREIGN KEY(placeid) REFERENCES estate(id)
 );
-
 CREATE TABLE tenancycontract(
 	startdate INTEGER	,
 	duration INTEGER	,
@@ -69,7 +61,6 @@ CREATE TABLE tenancycontract(
 	tbuyer INTEGER		,
 	CONSTRAINT ref_buyert FOREIGN KEY(tbuyer) REFERENCES person(pid)
 );
-
 CREATE TABLE purchasecontract(
 	nooinstallments INTEGER	,
 	interestrate INTEGER 	,

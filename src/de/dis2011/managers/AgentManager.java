@@ -53,10 +53,12 @@ private int NumberOfAgents = 0;
 
 			// Erzeuge Anfrage
 			String selectSQL = "DELETE FROM estateagent WHERE aid=?";
-			PreparedStatement pstmt = con.prepareStatement(selectSQL, id);
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+			pstmt.setInt(1, id);
 
 			// Führe Anfrage aus
 			pstmt.executeUpdate();
+			AgentsArray[id] = null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -99,6 +101,13 @@ private int NumberOfAgents = 0;
 			}
 		}
 		return -1;
+	}
+	
+	public boolean checkForAgent(int id){
+		if(AgentsArray[id] instanceof Agent){
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -1,5 +1,4 @@
 package de.dis2011;
-import de.dis2011.data.*;
 import de.dis2011.managers.*;
 
 /**
