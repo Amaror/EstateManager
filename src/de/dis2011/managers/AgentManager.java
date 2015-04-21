@@ -104,7 +104,7 @@ private int NumberOfAgents = 0;
 	}
 	
 	public boolean checkForAgent(int id){
-		if(AgentsArray[id] instanceof Agent){
+		if(AgentsArray[id-1] instanceof Agent){
 			return true;
 		}
 		return false;

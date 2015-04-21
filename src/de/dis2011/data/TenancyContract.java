@@ -1,14 +1,16 @@
 package de.dis2011.data;
 
 import java.sql.Connection;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 
 public class TenancyContract extends Contract{
 	
-	private int StartDate;
+	private String StartDate;
 	private int Duration;
 	private int AddCost;
 	private int Buyer;
@@ -18,11 +20,11 @@ public class TenancyContract extends Contract{
 	}
 	
 	//Getter and Setter
-	public int getStartDate() {
+	public String getStartDate() {
 		return StartDate;
 	}
 	
-	public void setStartDate(int startdate) {
+	public void setStartDate(String startdate) {
 		StartDate = startdate;
 	}
 	
@@ -59,12 +61,14 @@ public class TenancyContract extends Contract{
 			String selectSQL = "SELECT * FROM tenancycontract WHERE tcontractid = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
+			
+			final SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd");
 
 			// Führe Anfrage aus
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				TenancyContract ts = new TenancyContract();
-				ts.setStartDate(rs.getInt("startdate"));
+				ts.setStartDate(rs.getString("startdate"));
 				ts.setDuration(rs.getInt("duration"));
 				ts.setAddCost(rs.getInt("addcosts"));
 				ts.setBuyer(rs.getInt("tbuyer"));
@@ -81,7 +85,7 @@ public class TenancyContract extends Contract{
 				rs.next();
 				
 				ts.setContractNo(id);
-				ts.setDate(rs.getInt("date"));
+				ts.setDate(rs.getString("date"));
 				ts.setPlaceID(rs.getInt("placeid"));
 				
 				return ts;
@@ -107,7 +111,7 @@ public class TenancyContract extends Contract{
 						Statement.RETURN_GENERATED_KEYS);
 
 				// Setze Anfrageparameter und fC<hre Anfrage aus
-				pstmt.setInt(1, getDate());
+				pstmt.setString(1, getDate());
 				pstmt.setInt(2, getPlaceID());
 				
 				pstmt.executeUpdate();
@@ -124,7 +128,7 @@ public class TenancyContract extends Contract{
 						Statement.RETURN_GENERATED_KEYS);
 
 				// Setze Anfrageparameter und fC<hre Anfrage aus
-				pstmt.setInt(1, getStartDate());
+				pstmt.setString(1, getStartDate());
 				pstmt.setInt(2, getDuration());
 				pstmt.setInt(3, getAddCost());
 				pstmt.setInt(4, getBuyer());
@@ -140,14 +144,14 @@ public class TenancyContract extends Contract{
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
-				pstmt.setInt(1, getDate());
+				pstmt.setString(1, getDate());
 				pstmt.setInt(2, getPlaceID());
 
 				updateSQL = "UPDATE tenancycontract SET startdate = ?, duration = ?, addcosts = ?, tbuyer = ? WHERE tcontractid = ?";
 				pstmt = con.prepareStatement(updateSQL);
 				
 				// Setze Anfrage Parameter
-				pstmt.setInt(1, getStartDate());
+				pstmt.setString(1, getStartDate());
 				pstmt.setInt(2, getDuration());
 				pstmt.setInt(3, getAddCost());
 				pstmt.setInt(4, getBuyer());

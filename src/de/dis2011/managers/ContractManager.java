@@ -24,7 +24,7 @@ private int contractCount;
 		return contractCount;
 	}
 	
-	public int addPurchaseContract(int nooinstallments, int interestrate, int buyer, int date, int placeid) {
+	public int addPurchaseContract(int nooinstallments, int interestrate, int buyer, String date, int placeid) {
 		PurchaseContract purchase = new PurchaseContract();
 		purchase.setNoOInstallments(nooinstallments);
 		purchase.setInterestRate(interestrate);
@@ -37,7 +37,7 @@ private int contractCount;
 		return purchase.getContractNo();
 	}
 	
-	public int addTenancyContract(int startdate, int duration, int addcost, int buyer, int date, int placeid) {
+	public int addTenancyContract(String startdate, int duration, int addcost, int buyer, String date, int placeid) {
 		TenancyContract tenancy = new TenancyContract();
 		tenancy.setStartDate(startdate);
 		tenancy.setDuration(duration);

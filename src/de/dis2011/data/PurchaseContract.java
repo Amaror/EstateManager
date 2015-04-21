@@ -71,7 +71,7 @@ public class PurchaseContract extends Contract{
 				rs.next();
 				
 				ts.setContractNo(id);
-				ts.setDate(rs.getInt("date"));
+				ts.setDate(rs.getString("date"));
 				ts.setPlaceID(rs.getInt("placeid"));
 				
 				return ts;
@@ -97,7 +97,7 @@ public class PurchaseContract extends Contract{
 						Statement.RETURN_GENERATED_KEYS);
 
 				// Setze Anfrageparameter und fC<hre Anfrage aus
-				pstmt.setInt(1, getDate());
+				pstmt.setString(1, getDate());
 				pstmt.setInt(2, getPlaceID());
 				
 				pstmt.executeUpdate();
@@ -129,7 +129,7 @@ public class PurchaseContract extends Contract{
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
-				pstmt.setInt(1, getDate());
+				pstmt.setString(1, getDate());
 				pstmt.setInt(2, getPlaceID());
 
 				updateSQL = "UPDATE tenancycontract SET startdate = ?, duration = ?, addcost = ?, pbuyer = ? WHERE pcontractid = ?";

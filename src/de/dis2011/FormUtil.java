@@ -1,8 +1,13 @@
 package de.dis2011;
 
 import java.io.BufferedReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Locale;
 
 /**
  * Kleine Helferklasse zum Einlesen von Formulardaten
@@ -48,5 +53,17 @@ public class FormUtil {
 		}
 		
 		return ret;
+	}
+	
+	public static Date readDate(String label) {
+		final DateFormat format = new SimpleDateFormat("dd.mm.yyyy", Locale.GERMAN);
+		Date date = null;
+		try {
+			date = format.parse(label);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date;
 	}
 }

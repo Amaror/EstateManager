@@ -106,13 +106,12 @@ public class ApplicationManager {
 	}
 	
 	public void switchToEstateMenu(){
-		String login = FormUtil.readString("Login");
-		String password = FormUtil.readString("Passwort");
-		
 		if(loggedInAgent == 0){
 			System.out.println("Kein Agent zur Estate-Verwaltung vorhanden.");
 			return;
 		}
+		String login = FormUtil.readString("Login");
+		String password = FormUtil.readString("Passwort");
 		
 		if(agentManager.checkPassword(login, password) != -1) {
 			loggedInAgent = agentManager.checkPassword(login, password);
@@ -197,7 +196,7 @@ public class ApplicationManager {
 		int id = agentManager.addAgent(name, address, login, password);
 		
 		
-		System.out.println("Makler mit der ID "+id+" wurde erzeugt.");
+		System.out.println("Agent mit der ID "+id+" wurde erzeugt.");
 	}
 	
 	public void changeAgent() {
@@ -424,14 +423,14 @@ public class ApplicationManager {
 		}
 		
 		if(estateManager.checkEstate(estate).equals("apartment")){
-			int date = FormUtil.readInt("Datum");
-			int startdate = FormUtil.readInt("Startdatum");
+			String date = FormUtil.readString("Datum");
+			String startdate = FormUtil.readString("Startdatum");
 			int duration = FormUtil.readInt("Dauer");
 			int addcost = FormUtil.readInt("Zusatzkosten");
 			int id = contractManager.addTenancyContract(startdate, duration, addcost, buyer, date, estate);
 			System.out.println("Mietvertrag mit der Nummer "+id+" wurde unterschrieben.");			
 		} else {
-			int date = FormUtil.readInt("Datum");
+			String date = FormUtil.readString("Datum");
 			int nooinstallments = FormUtil.readInt("Anzahl an Zahlungen");
 			int interestrate = FormUtil.readInt("Zinssatz");
 			int id = contractManager.addPurchaseContract(nooinstallments, interestrate, buyer, date, estate);

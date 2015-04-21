@@ -9,7 +9,7 @@ import java.sql.Statement;
 public abstract class Contract {
 	
 	private int ContractNo = -1;
-	private int Date;
+	private String Date;
 	private int PlaceID;
 	
 	public int getContractNo() {
@@ -20,11 +20,11 @@ public abstract class Contract {
 		ContractNo = contractno;
 	}
 	
-	public int getDate() {
+	public String getDate() {
 		return Date;
 	}
 	
-	public void setDate(int date) {
+	public void setDate(String date) {
 		Date = date;
 	}
 	
@@ -51,7 +51,7 @@ public abstract class Contract {
 						Statement.RETURN_GENERATED_KEYS);
 
 				// Setze Anfrageparameter und fC<hre Anfrage aus
-				pstmt.setInt(1, getDate());
+				pstmt.setString(1, getDate());
 				pstmt.setInt(2, getPlaceID());
 				
 				pstmt.executeUpdate();
@@ -70,7 +70,7 @@ public abstract class Contract {
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
-				pstmt.setInt(1, getDate());
+				pstmt.setString(1, getDate());
 				pstmt.setInt(2, getPlaceID());
 				
 				pstmt.close();
