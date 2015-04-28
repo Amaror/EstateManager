@@ -14,5 +14,19 @@
 		<property name="SquareArea" type="int" column="squarearea"/>
 		<many-to-one name="agent" class="Agent"
 			column="estateagent" not-null="true" />
+		<joined-subclass name=“Apartment" table=“apartment">
+			<key column=“apartmentid"/>
+			<property name=“Floor" type="int" column=“floor"/>
+			<property name=“Rent" type="int" column=“rent"/>
+			<property name=“Rooms" type="int" column=“rooms"/>
+			<property name=“Balcony" type="boolean" column=“balcony"/>
+			<property name=“BuiltInKitchen" type="boolean" column=“builtinkitchen"/>
+		</joined-subclass>
+		<joined-subclass name=“House" table=“house">
+			<key column=“houseid"/>
+			<property name=“Floor" type="int" column=“floors"/>
+			<property name=“Price" type="int" column=“price"/>
+			<property name=“Garden" type="boolean" column=“garden"/>
+		</joined-subclass>
 	</class>
 </hibernate-mapping>

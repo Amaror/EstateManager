@@ -6,7 +6,6 @@ DROP TABLE contract;
 DROP TABLE tenancycontract;
 DROP TABLE purchasecontract;
 DROP TABLE person;
-
 CREATE TABLE estateagent(
 	aid INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
 	name varchar(255) 	,
@@ -48,12 +47,12 @@ CREATE TABLE person(
 );
 CREATE TABLE contract(
 	cid INTEGER	PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
-	date INTEGER		NOT NULL,
+	date varchar(255)		NOT NULL,
 	placeid INTEGER	,	
 	Constraint ref_placeid FOREIGN KEY(placeid) REFERENCES estate(id)
 );
 CREATE TABLE tenancycontract(
-	startdate INTEGER	,
+	startdate varchar(255)	,
 	duration INTEGER	,
 	addcosts INTEGER	,
 	tcontractid INTEGER	,
